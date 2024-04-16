@@ -27,9 +27,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6102741998074312279}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.33, y: 1.5, z: 0.1215}
-  m_LocalScale: {x: 0.22238286, y: 2, z: 0.04}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4964940477568106041}
@@ -197,10 +197,6 @@ PrefabInstance:
     - target: {fileID: 5473321114833832618, guid: 3e451b9de022b5e498d4bb2bddcfcc34, type: 3}
       propertyPath: m_Name
       value: TextBox1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6006167822082371398, guid: 3e451b9de022b5e498d4bb2bddcfcc34, type: 3}
-      propertyPath: m_text
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

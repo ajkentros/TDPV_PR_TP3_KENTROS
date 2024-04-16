@@ -202,18 +202,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 243974222313711451}
     m_Modifications:
-    - target: {fileID: 6772799672214144676, guid: 80046f0ea58a35b40ac4a789b026e29e, type: 3}
-      propertyPath: m_text
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8302786038550745222, guid: 80046f0ea58a35b40ac4a789b026e29e, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8302786038550745222, guid: 80046f0ea58a35b40ac4a789b026e29e, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8302786038550745222, guid: 80046f0ea58a35b40ac4a789b026e29e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3
@@ -254,17 +242,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8310091162060817130, guid: 80046f0ea58a35b40ac4a789b026e29e, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8807477477512615328, guid: 80046f0ea58a35b40ac4a789b026e29e, type: 3}
       propertyPath: m_Name
       value: Box3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8807477477512615328, guid: 80046f0ea58a35b40ac4a789b026e29e, type: 3}
-      propertyPath: m_TagString
-      value: Box
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -284,18 +264,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 243974222313711451}
     m_Modifications:
-    - target: {fileID: 635817731523940750, guid: 72d844c7dfd81a345a3df52594a98337, type: 3}
-      propertyPath: m_text
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4919014658262774146, guid: 72d844c7dfd81a345a3df52594a98337, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4919014658262774146, guid: 72d844c7dfd81a345a3df52594a98337, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4919014658262774146, guid: 72d844c7dfd81a345a3df52594a98337, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3
@@ -340,10 +308,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Box1
       objectReference: {fileID: 0}
-    - target: {fileID: 6102741998074312279, guid: 72d844c7dfd81a345a3df52594a98337, type: 3}
-      propertyPath: m_TagString
-      value: Box
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -365,22 +329,6 @@ PrefabInstance:
     - target: {fileID: 2616702867276427565, guid: e055af6bb8395b34ea14e657731870ba, type: 3}
       propertyPath: m_Name
       value: Box2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2616702867276427565, guid: e055af6bb8395b34ea14e657731870ba, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2616702867276427565, guid: e055af6bb8395b34ea14e657731870ba, type: 3}
-      propertyPath: m_TagString
-      value: Box
-      objectReference: {fileID: 0}
-    - target: {fileID: 2716147948596216066, guid: e055af6bb8395b34ea14e657731870ba, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2716147948596216066, guid: e055af6bb8395b34ea14e657731870ba, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2716147948596216066, guid: e055af6bb8395b34ea14e657731870ba, type: 3}
       propertyPath: m_LocalPosition.x
@@ -421,10 +369,6 @@ PrefabInstance:
     - target: {fileID: 2716147948596216066, guid: e055af6bb8395b34ea14e657731870ba, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6083110598449506991, guid: e055af6bb8395b34ea14e657731870ba, type: 3}
-      propertyPath: m_text
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

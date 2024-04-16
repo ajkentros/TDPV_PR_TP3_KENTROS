@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,51 +7,82 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float horizontalStep = 3f; // Paso horizontal
-    [SerializeField] private float movementSpeed = 3f; // Velocidad de movimiento vertical
-    [SerializeField] private float jumpForce = 5f; // Fuerza del salto
-    [SerializeField] private RouteSpawner routeSpawner; // Referencia al GameManager
+    [SerializeField] private float horizontalStep = 3f;          // Variable referencia a ls saltos que hará el player en el eje x (horizontal)
+    [SerializeField] private float movementSpeedInit = 5f;       // Variable referencia a la velocidad inicial de movimiento en el eje y (vertical)
+    [SerializeField] private float movementSpeedFinal = 20f;     // Variable referencia a la velocidad final de movimiento en el eje y (vertical)
+    [SerializeField] private float jumpForce = 5f;               // Variable referencia a la fuerza del salto
+    
+    [SerializeField] private RouteSpawner routeSpawner;          // Variable referencia al RouteSpawner
+    [SerializeField] private GameManager gameManager;            // Variable referencia al GameManager
 
-    private bool isGrounded = true; // Variable para verificar si el jugador está en el suelo
+    private Rigidbody rb;                       // Variable referencia al Rigidbody del player
+    private float movementSpeed;                // Variable referencia velocidad actual de movimiento en el eje y (vertical) 
+    private float factorSpeed;                  // Factor de aumento de la velocidad = (20f = velocidad Final) / (5f = velocidad inicial) elevado a (1/maxima cantidad de desfíos) 
+    private readonly float gravityScale = 3f;   // Variable referencia de la escala de aumento a aplicar a la gravedad (para que caiga más rápido)
+    private Vector3 playerPosition;        // Variable referencia para guardar la posición original del playerPrefab
+    private bool isGrounded = true;             // Variable referencia para verificar si el jugador está en el suelo
+
 
     private void Start()
     {
-        routeSpawner = FindObjectOfType<RouteSpawner>();
+        // Obtiene la posición del playerPrefab
+        playerPosition = transform.position; Debug.Log(playerPosition);
+
+        // Instancia el player en su posición original del prefab
+        InitPlayerController();
     }
 
     private void Update()
     {
-        // Mover el jugador horizontalmente solo en pasos discretos
+        // Verifica si el juego está pausado
+        if (gameManager.IsPaused())
+        {
+            return; // Sale de Update si el juego está pausado
+
+        }else if(gameManager.GetIsGameOver() == false || gameManager.GetIsWin() == false)
+        {
+            // Si no está gameOver o gameWin => se mueve
+            ManageMovements(); 
+        }
+    }
+
+    // Gestiona el movimiento del player
+    private void ManageMovements()
+    {
+        // Mueve al jugador en el eje x (horizontal) solo en pasos discretos (3 movimientos) si hace clic en la tecla izquierda o derecha
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
+            // Mueve al player a la izqueirda
             MoveHorizontal(-horizontalStep);
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
+            // Mueve al pleyar a la derecha
             MoveHorizontal(horizontalStep);
         }
 
-        // Mover verticalmente 
-        
-            MoveVertical();
-        
+        // Mueve al player en el eje y (vertical)
+        MoveVertical();
 
-        // Saltar si el jugador está en el suelo y se presiona la tecla de salto (Espacio)
+        // Salta el player si hace clic en space y está en el suelo
         if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
+            // Mueve al player en el eje y (vertical)
             Jump();
         }
     }
 
+    // Gestiona el movimiento en el eje x (horizontal)
     private void MoveHorizontal(float targetXPosition)
     {
+        // Define la cariable currentPosition = a la posición actual del player
         Vector3 currentPosition = transform.position;
-        // Mover al jugador horizontalmente
+
+        // Si la variable currentPosition en el eje x está dentro de un margen de error => posiciona al player en su nueva posición con saltos definidos en targetPosition = horizotal step
         if(currentPosition.x >= -0.5f && currentPosition.x <= 0.5f)
         {
             currentPosition.x = 0;
             transform.position = new Vector3(currentPosition.x + targetXPosition, transform.position.y, transform.position.z);
-            
             
         }else if(currentPosition.x >= 2.5f && currentPosition.x <= 3.5f)
         {
@@ -71,70 +103,124 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(transform.position.x);
     }
 
+    // Gestiona el movimiento del player en el eje z (vertical)
     private void MoveVertical()
     {
-        // Mover verticalmente sin intervención del jugador
+        // Mueve al pleyer en el eje z (vertical)
         transform.Translate(movementSpeed * Time.deltaTime * Vector3.forward);
     }
 
+    // Gestiona el movimiento del player en el eje y (salto)
     private void Jump()
     {
-        // Aplicar la fuerza de salto en la dirección vertical
+        // Aplicaa una fuerza de salto en la dirección y, al rigidbody del player
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
-        //GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        transform.Translate(jumpForce * Time.deltaTime * Vector3.up);
+        // Establece un drag alto para reducir la velocidad en el aire
+        rb.drag = 5f;
     }
 
+    // Gestiona la colisión del Player cuando toca el route (lo habilita a saltar)
     private void OnCollisionEnter(Collision collision)
     {
-        // Verificar si el jugador colisiona con un objeto que tenga el tag "Route"
+        // Si el player colisiona con route => cambia la bandera de que está en el piso y modifica el drag
         if (collision.gameObject.CompareTag("Route"))
         {
             isGrounded = true;
+            // Restablecer el drag a 0 para mantener la velocidad constante en el suelo
+            rb.drag = 0f;
         }
-        
     }
 
+    // Gestiona la colisión del Player cuando está saltando, no toca el route (lo habilita a no saltar cuando está saltando)
     private void OnCollisionExit(Collision collision)
     {
-        // Verificar si el jugador ya no está en contacto con un objeto que tenga el tag "Route"
+        // Si el jugador ya no toca el route => cambia la bandera para que no pueda saltar mientras está saltando
         if (collision.gameObject.CompareTag("Route"))
         {
             isGrounded = false;
         }
     }
 
+    // Gestiona la colisión del player con el final del route (tag = SpawnTrigger) o el player con una Box (que tiene la solución del acertijo)
     private void OnTriggerEnter(Collider other)
     {
+        // Si el player colisiona con el final del route => llama al método que crea un nuevo route
         if (other.gameObject.CompareTag("SpawnTrigger"))
         {
-            Debug.Log("trigger con SpawnTrigger");
+            //Debug.Log("trigger con SpawnTrigger");
             routeSpawner.SpawnTriggerEntered();
         }
 
+        // Si el player con el Box => 
         if (other.CompareTag("Box"))
         {
-            // Obtener el nombre de la caja
-            string boxName = other.gameObject.name;
+            // Obtiene el nombre de la caja colisionada
+            string boxName = other.gameObject.name; //Debug.Log("colisión con box =" + boxName);
 
-            // Obtener el texto de la caja
-            string boxText = routeSpawner.GetBoxText(boxName);
+            // Obteniene el texto de la caja colisioanda
+            string boxText = routeSpawner.GetBoxText(boxName); //Debug.Log("texto de la caja =" + boxText);
 
-            // Obtener la solución actual
-            string currentSolution = routeSpawner.GetCurrentSolution();
+            // Obtiene la solución actual llamando al método GetCurrentSolution() que le devuelve el texto de la solución cargada en el scriptabel object
+            string currentSolution = routeSpawner.GetCurrentSolution(); //Debug.Log("Solución = " +  currentSolution);
 
-            // Verificar si el texto coincide con la solución
+            // Si el texto de la caja colisionada = al texto solución =>
             if (boxText == currentSolution)
             {
-                Debug.Log("Respuesta correcta!: " + boxText +" "+ currentSolution);
-                // Aquí puedes agregar la lógica adicional cuando la respuesta es correcta
+                //Debug.Log("Respuesta correcta!: " + boxText + " " + currentSolution);
+
+                // Destruye la caja (GameObject) colisionada
+                Destroy(other.gameObject);
+
+                // Llama al método SetCurrentDesafioIndex() que incrementa el índice del desafío actual 
+                routeSpawner.SetCurrentDesafioIndex();
+
+                // Aumenta la velocidad del player haciendo que la velcodad actual = velcidad actual * el factor de velocidad elevado al índice de desafío actual
+                movementSpeed =  movementSpeedInit * Mathf.Pow(factorSpeed, routeSpawner.GetCurrentDesafioIndex());
+
+                //Debug.Log(" velocidad = " + movementSpeed);
+
+                // Actualiza el valor de la velocida en GamaManager
+                gameManager.SetSpeed(movementSpeed);
             }
             else
             {
-                Debug.Log("Respuesta incorrecta." + boxText + " " + currentSolution);
-                // Aquí puedes agregar la lógica adicional cuando la respuesta es incorrecta
-            }
+                //Debug.Log("Respuesta incorrecta." + boxText + " " + currentSolution);
+
+                // Si el texto de la caja colisionada no es igual la texto solución => actualiza la bandera de gameOver en GameManager
+                gameManager.SetIsGameOver(true);
+                                
+            }   
         }
+    }
+    
+    // Instancia el player en su posición original del prefab
+    public void InitPlayerController()
+    {
+        // Asigna velocidad de movimiento = velocidad incial
+        movementSpeed = movementSpeedInit;
+
+        // Calcula el factor de crecimiento de la velocidad
+        factorSpeed = Mathf.Pow(movementSpeedFinal / movementSpeedInit, 1f / gameManager.GetCantidadDesafios());
+
+        //movementSpeed = movementSpeedInit * Mathf.Pow(factorSpeed, routeSpawner.GetCurrentDesafioIndex()); Debug.Log("velocidad =" + movementSpeed);
+        Debug.Log("movementSpeed = " + movementSpeed);
+
+        // Instancia el player desde el prefab en la posición original
+        transform.position = playerPosition;
+
+        // Instancia el Ribidbody del player
+        rb = GetComponent<Rigidbody>();
+
+        // Ajusta el -9.81 según la gravedad y gravityScale
+        Physics.gravity = new Vector3(0, -9.81f * gravityScale, 0);  
+
+        // Instancia el GameObject del tipo RouteSpawner
+        routeSpawner = FindObjectOfType<RouteSpawner>();
+
+        // Actualiza la velocidad en GameManager
+        gameManager.SetSpeed(movementSpeed);
+        
     }
 }
 
